@@ -1,12 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Header from './components/Header';
+import CreateNote from './components/CreateNote';
+import DisplayNote from './components/DisplayNote';
 
-export default function App() {
+const App = () => {
+
+  const [notes, setNotes] = useState([])
+
+  function addNote(note) {
+    setNotes(prevNote => {
+      return [...prevNote, note]
+    })
+  }
+
+  function deleteNote (id) {
+    setNotes(prevNotes => {
+      return prevNotes.filter((noteItem, index) => {
+        return index !== id;
+      })
+    })
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Header />
+      <View style={styles.con}>
+        <CreateNote onAdd={addNote} />
+        {notes.map((noteItem, index) => {
+          return <DisplayNote key={index} id={index} title={noteItem.title} content={noteItem.content} onDelete={deleteNote} />
+        })}
+      </View>
     </View>
   );
 }
@@ -14,8 +39,12 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
+  con: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 30,
+  }
 });
+
+export default App;
